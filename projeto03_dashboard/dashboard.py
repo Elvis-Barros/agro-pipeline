@@ -44,9 +44,10 @@ def buscar_clima():
 
 # ── CONVERSÃO ──────────────────────────────
 def calcular_preco_saca(preco_usd_bushel, cotacao_dolar):
-    preco_usd_kg   = preco_usd_bushel / 27.216
-    preco_usd_saca = preco_usd_kg * 60
-    preco_brl_saca = preco_usd_saca * cotacao_dolar
+    preco_usd_bushel = preco_usd_bushel / 100
+    preco_usd_kg     = preco_usd_bushel / 27.216
+    preco_usd_saca   = preco_usd_kg * 60
+    preco_brl_saca   = preco_usd_saca * cotacao_dolar
     return round(preco_brl_saca, 2)
 
 # ── DASHBOARD ──────────────────────────────
