@@ -1,6 +1,6 @@
 # 🌱 Agro Pipeline — Inteligência de Dados para o Produtor Rural
 
-> Pipeline de dados end-to-end aplicado ao agronegócio brasileiro:  
+> Pipeline de dados end-to-end aplicado ao agronegócio brasileiro:
 > do dado bruto à decisão do produtor, em 3 projetos conectados.
 
 ---
@@ -12,7 +12,7 @@ Um produtor de soja no Cerrado precisa responder uma pergunta todo dia:
 > **"Vale a pena vender minha safra hoje?"**
 
 Para isso, ele precisa cruzar **dois dados críticos ao mesmo tempo**:
-- 📈 O **preço da soja** no mercado (CEPEA/ESALQ)
+- 📈 O **preço da soja** no mercado (Yahoo Finance / CBOT)
 - 🌧️ O **clima da sua região** (chuva, temperatura, risco de perda)
 
 Este repositório resolve exatamente isso — com um pipeline de dados construído do zero.
@@ -20,14 +20,17 @@ Este repositório resolve exatamente isso — com um pipeline de dados construí
 ---
 
 ## 🗂️ Estrutura do Projeto
-
 ```
 agro-pipeline/
 │
-├── projeto01_scraping/       # Coleta do preço da soja (Web Scraping)
+├── projeto01_scraping/       # Coleta do preço da soja (yfinance)
+│   └── scraping_soja.py
 ├── projeto02_clima/          # Coleta do clima por API + banco SQLite
+│   └── clima_api.py
 ├── projeto03_dashboard/      # Dashboard Streamlit (preço × clima)
-├── docs/                     # Imagens e documentação extra
+│   └── dashboard.py
+├── docs/                     # Documentação extra
+│   └── GUIA_GIT.md
 │
 ├── requirements.txt          # Dependências do projeto
 ├── .gitignore                # Arquivos ignorados pelo Git
@@ -36,38 +39,42 @@ agro-pipeline/
 
 ---
 
-## 🔗 Os 3 Projetos — Como se Conectam
-
+## 🔗 Como os 3 Projetos se Conectam
 ```
-[ CEPEA Website ]                    [ Open-Meteo API ]
+[ Yahoo Finance ]                    [ Open-Meteo API ]
        │                                     │
        ▼                                     ▼
  Projeto 01                           Projeto 02
- Web Scraping                         API + SQLite
+ scraping_soja.py                     clima_api.py
  precos_soja.csv                      clima.db
+                                      historico_clima.csv
        │                                     │
        └──────────────┬──────────────────────┘
                       ▼
                 Projeto 03
-            Dashboard Streamlit
-         "Devo vender minha soja hoje?"
+            dashboard.py
+     "Devo vender minha soja hoje?"
 ```
 
 ---
 
-## 📦 Projetos
+## 📦 Os 3 Projetos
 
 ### Projeto 01 — Rastreador de Preços da Soja
-**Técnicas:** Web Scraping · requests · BeautifulSoup · pandas  
-Coleta o preço diário da soja direto do CEPEA (Centro de Estudos Avançados em Economia Aplicada da ESALQ/USP) — a mesma fonte usada por tradings e cooperativas no Brasil. Salva histórico em CSV e Excel.
+**Técnicas:** yfinance · pandas · CSV  
+Coleta o preço diário da soja em tempo real via Yahoo Finance (mercado CBOT).
+Salva histórico em CSV com data e hora da coleta.
 
-### Projeto 02 — Monitor Climático da Região Produtora
-**Técnicas:** Consumo de API REST · JSON · SQLite · SQL  
-Consulta temperatura, chuva e umidade de Doverlândia-GO (-16.7660, -52.4465) via Open-Meteo API e persiste em banco relacional com histórico. Executa consultas analíticas SQL para identificar padrões.
+### Projeto 02 — Monitor Climático de Doverlândia/GO
+**Técnicas:** API REST · JSON · SQLite · SQL  
+Consulta temperatura, chuva e umidade via Open-Meteo API e persiste
+em banco relacional SQLite com histórico. Exporta CSV para o dashboard.
 
-### Projeto 03 — Dashboard de Decisão
-**Técnicas:** Streamlit · Plotly · integração de dados  
-Une os dados dos dois projetos anteriores num dashboard interativo. Mostra a correlação entre clima extremo e variação de preço — entregando ao produtor uma visão de contexto para a decisão de venda.
+### Projeto 03 — Painel do Produtor Rural
+**Técnicas:** Streamlit · Plotly · integração de dados · conversão de moeda  
+Une os dados dos dois projetos num dashboard interativo. Converte o preço
+de US$/bushel para R$/saca automaticamente. Mostra gráficos de histórico
+de preço e temperatura lado a lado.
 
 ---
 
@@ -75,48 +82,53 @@ Une os dados dos dois projetos anteriores num dashboard interativo. Mostra a cor
 
 **1. Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/agro-pipeline.git
+git clone https://github.com/Elvis-Barros/agro-pipeline.git
 cd agro-pipeline
 ```
 
-**2. Crie um ambiente virtual e instale as dependências**
+**2. Instale as dependências**
 ```bash
-python -m venv venv
-source venv/bin/activate        # Linux/Mac
-venv\Scripts\activate           # Windows
-
 pip install -r requirements.txt
 ```
 
 **3. Execute na ordem**
 ```bash
-# Coleta preços
+# Coleta preços da soja
 python projeto01_scraping/scraping_soja.py
 
-# Coleta clima
+# Coleta clima de Doverlândia
 python projeto02_clima/clima_api.py
 
 # Sobe o dashboard
-streamlit run projeto03_dashboard/dashboard.py
+python -m streamlit run projeto03_dashboard/dashboard.py
+```
+
+**4. Acesse no navegador**
+```
+http://localhost:8501
 ```
 
 ---
 
 ## 🛠️ Tecnologias
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
 ![Pandas](https://img.shields.io/badge/Pandas-2.2-lightblue?logo=pandas)
 ![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.35-FF4B4B?logo=streamlit)
 ![Plotly](https://img.shields.io/badge/Plotly-5.22-3F4F75?logo=plotly)
+![yfinance](https://img.shields.io/badge/yfinance-0.2-green)
 
 ---
 
 ## 👤 Autor
 
-Desenvolvido como projeto de portfólio para demonstrar habilidades em  
+**Elvis Barros**  
+Desenvolvido como projeto de portfólio para demonstrar habilidades em
 **Engenharia de Dados** aplicada ao agronegócio brasileiro.
+
+[![GitHub](https://img.shields.io/badge/GitHub-Elvis--Barros-181717?logo=github)](https://github.com/Elvis-Barros)
 
 ---
 
-*Dados de preço: CEPEA/ESALQ-USP · Dados climáticos: Open-Meteo API (open-source)*
+*Dados de preço: Yahoo Finance (CBOT) · Dados climáticos: Open-Meteo API (open-source)*
