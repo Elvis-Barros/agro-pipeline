@@ -1,0 +1,13 @@
+# Projeto 01 - Scraping
+requests==2.31.0
+beautifulsoup4==4.12.3
+pandas==2.2.2
+openpyxl==3.1.2
+
+# Projeto 02 - API + SQL
+# (requests e pandas já listados acima)
+# sqlite3 já vem embutido no Python
+
+# Projeto 03 - Dashboard
+streamlit==1.35.0
+plotly==5.22.0

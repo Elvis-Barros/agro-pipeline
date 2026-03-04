@@ -1,0 +1,22 @@
+# Ambiente virtual Python
+venv/
+.env/
+env/
+
+# Variáveis de ambiente (nunca suba senhas/chaves!)
+.env
+
+# Banco de dados local
+*.db
+*.sqlite
+
+# Arquivos gerados automaticamente
+*.csv
+*.xlsx
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Streamlit cache
+.streamlit/
